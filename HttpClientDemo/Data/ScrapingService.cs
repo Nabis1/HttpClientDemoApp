@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -13,27 +14,40 @@ public class ScrapingService
         _httpClient = httpClient;
     }
 
-    public async Task<(string Name, int? Price)> ScrapePhoneInfo(string url)
+    public async Task<List<(string Name, int? Price)>> ScrapePhoneInfo(string url)
     {
         HtmlWeb web = new HtmlWeb();
         HtmlDocument doc = web.Load(url);
 
-        var nameNode = doc.DocumentNode.SelectSingleNode("//h1[@class='name']");
-        var priceNode = doc.DocumentNode.SelectSingleNode("//div[@class='price']");
+        var phoneNodes = doc.DocumentNode.SelectNodes("//div[contains(@class, 'box browsingitem')]");
 
-        if (nameNode != null && priceNode != null)
+        if (phoneNodes != null && phoneNodes.Any())
         {
-            var name = nameNode.InnerText.Trim();
-            var priceText = priceNode.InnerText.Trim();
-            var price = ExtractPrice(priceText);
+            var phones = new List<(string Name, int? Price)>();
 
-            return (name, price);
+            foreach (var node in phoneNodes)
+            {
+                var nameNode = node.SelectSingleNode(".//a[@class='name browsinglink']");
+                var priceNode = node.SelectSingleNode(".//span[@class='price-box__price']");
+
+                if (nameNode != null && priceNode != null)
+                {
+                    var name = nameNode.InnerText.Trim();
+                    var priceText = priceNode.InnerText.Trim();
+                    var price = ExtractPrice(priceText);
+
+                    phones.Add((name, price));
+                }
+            }
+
+            return phones;
         }
         else
         {
-            return (null, null);
+            return new List<(string Name, int? Price)>();
         }
     }
+
 
     private int? ExtractPrice(string priceText)
     {

@@ -7,7 +7,7 @@
 
 <h3>Seznam iPhonů</h3>
 
-<button @onclick="SortPhones">Sort by Price</button>
+<button @onclick="LoadPhoneInfo">Load Phone Info</button>
 
 @if (phoneInfo != null && phoneInfo.Any())
 {
@@ -31,26 +31,18 @@
 }
 else
 {
-    <p>Data not found.</p>
+    <p>Data not loaded.</p>
 }
 
 @code {
-    private List<(string Name, int? Price)> phoneInfo = new List<(string Name, int? Price)>();
+    private List<(string Name, int? Price)> phoneInfo;
 
     [Inject]
     private ScrapingService scrapingService { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private async Task LoadPhoneInfo()
     {
         var url = "https://www.alza.cz/iphone/18851638.htm?evt=re&exps=iphone";
-        var result = await scrapingService.ScrapePhoneInfo(url);
-        phoneInfo.Add(result);
+        phoneInfo = await scrapingService.ScrapePhoneInfo(url);
     }
-
-    private void SortPhones()
-    {
-        phoneInfo = phoneInfo.OrderBy(p => p.Price).ToList();
-    }
-
-   
 }
