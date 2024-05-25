@@ -1,0 +1,37 @@
+﻿@page "/decimalconverter"
+<PageTitle>Binary Converter</PageTitle>
+
+<h2> 16-bit representation converter</h2>
+
+
+<p>
+    Enter a decimal number:
+    <input type="number" @oninput="UpdateBinaryRepresentation" />
+</p>
+
+<p>
+    Binary representation:
+    <strong>@binaryRepresentation</strong>
+</p>
+
+@code {
+    private int decimalNumber;
+    private string binaryRepresentation = string.Empty;
+
+    private void UpdateBinaryRepresentation(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value.ToString(), out decimalNumber))
+        {
+            binaryRepresentation = ConvertToBinary(decimalNumber);
+        }
+        else
+        {
+            binaryRepresentation = string.Empty;
+        }
+    }
+
+    private string ConvertToBinary(int number)
+    {
+        return Convert.ToString(number, 2).PadLeft(16, '0'); // 8-bit representation
+    }
+}

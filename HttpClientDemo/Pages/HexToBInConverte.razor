@@ -1,0 +1,50 @@
+﻿@page "/hexatobinconverter"
+
+<h3>Hexadecimal To Binary Converter</h3>
+
+<input type="text" @bind="hexInput" placeholder="Enter hexadecimal number" />
+<button @onclick="PerformConversion">Convert</button>
+
+@if (!string.IsNullOrEmpty(binaryResult))
+{
+    <p>Binary: @FormattedBinResult</p>
+}
+
+@code {
+    private string hexInput = "";
+    private string binaryResult = "";
+
+    private string FormattedBinResult
+    {
+        get
+        {
+            // Add space every 4 characters
+            return binaryResult.Length > 4 ? string.Join(" ", SplitEveryN(binaryResult, 4)) : binaryResult;
+        }
+    }
+
+    private void PerformConversion()
+    {
+        if (!string.IsNullOrEmpty(hexInput))
+        {
+            try
+            {
+                // Convert the hexadecimal input to binary
+                string binary = System.Convert.ToString(System.Convert.ToInt32(hexInput, 16), 2);
+                binaryResult = binary.PadLeft(8, '0'); // Add leading zeros to make it 8 bits
+            }
+            catch (Exception)
+            {
+                binaryResult = "Invalid input";
+            }
+        }
+    }
+
+    private IEnumerable<string> SplitEveryN(string str, int n)
+    {
+        for (int i = 0; i < str.Length; i += n)
+        {
+            yield return str.Substring(i, Math.Min(n, str.Length - i));
+        }
+    }
+}

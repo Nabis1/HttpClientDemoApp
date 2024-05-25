@@ -1,0 +1,16 @@
+﻿@page "/Counter"
+
+<h1>Klikni</h1>
+
+<p>Počet kliků: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Klikej,klikej víc</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

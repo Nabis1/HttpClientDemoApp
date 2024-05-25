@@ -1,0 +1,33 @@
+﻿@page "/getdata"
+
+<button @onclick="FetchData">Get Data</button>
+
+@if (getData != null)
+{
+	<h3>Title: @getData.title</h3>
+	<h2>ID: @getData.id</h2>
+	<p>Completed: @getData.completed</p>
+}
+
+
+@code{
+    public GetNewData getData;
+    public HttpClient httpClient = new HttpClient();
+
+    private async Task FetchData()
+    {
+        getData = await httpClient.GetFromJsonAsync<GetNewData>("https://jsonplaceholder.typicode.com/todos/1");
+    }
+
+
+
+
+    public class GetNewData
+    {
+        public int userId { get; set; }
+        public int id { get; set; }
+        public string title { get; set; }
+        public bool completed { get; set; }
+    }
+
+}

@@ -1,0 +1,56 @@
+﻿@page "/phoneprices"
+
+@using System
+@using Microsoft.Extensions.DependencyInjection
+@inject NavigationManager Navigation
+@inject IServiceProvider ServiceProvider
+
+<h3>Seznam iPhonů</h3>
+
+<button @onclick="SortPhones">Sort by Price</button>
+
+@if (phoneInfo != null && phoneInfo.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var phone in phoneInfo)
+            {
+                <tr>
+                    <td>@phone.Name</td>
+                    <td>@phone.Price Kč</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Data not found.</p>
+}
+
+@code {
+    private List<(string Name, int? Price)> phoneInfo = new List<(string Name, int? Price)>();
+
+    [Inject]
+    private ScrapingService scrapingService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var url = "https://www.alza.cz/iphone/18851638.htm?evt=re&exps=iphone";
+        var result = await scrapingService.ScrapePhoneInfo(url);
+        phoneInfo.Add(result);
+    }
+
+    private void SortPhones()
+    {
+        phoneInfo = phoneInfo.OrderBy(p => p.Price).ToList();
+    }
+
+   
+}

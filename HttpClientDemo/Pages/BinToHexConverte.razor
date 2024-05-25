@@ -1,0 +1,33 @@
+﻿@page "/bintohexconverter"
+
+<h3>Binary To Hexadecimal Converter</h3>
+
+<input type="text" @bind="binaryInput" placeholder="Enter binary number" />
+<button @onclick="ConvertToHex">Convert</button>
+
+@if (!string.IsNullOrEmpty(hexResult))
+{
+    <p>Hexadecimal: @hexResult</p>
+}
+
+@code {
+    private string binaryInput = "";
+    private string hexResult = "";
+
+    private void ConvertToHex()
+    {
+        if (!string.IsNullOrEmpty(binaryInput))
+        {
+            try
+            {
+                // Convert binary input to hexadecimal
+                string hex = Convert.ToInt32(binaryInput, 2).ToString("X");
+                hexResult = hex;
+            }
+            catch (Exception)
+            {
+                hexResult = "Invalid input";
+            }
+        }
+    }
+}
