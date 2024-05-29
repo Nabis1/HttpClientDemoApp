@@ -1,0 +1,59 @@
+﻿@page "/exchangeRateProvider"
+@using System.Net.Http
+@using System.Text.Json
+@using System.Threading.Tasks
+@using System.Text.Json.Serialization
+@using HttpClientDemo.Data
+@using HttpClientDemo.Models;
+@inject ExchangeRateService ExchangeRateService
+
+<h3>Exchange Rates</h3>
+
+<button @onclick="LoadExchangeRates">Load Exchange Rates</button>
+
+@if (exchangeRates != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Country</th>
+                <th>Currency</th>
+                <th>Amount</th>
+                <th>Rate</th>
+                <th>CurrencyCode</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rate in exchangeRates)
+            {
+                <tr>
+                    <td>@rate.Country</td>
+                    <td>@rate.Currency</td>
+                    <td>@rate.Amount</td>
+                    <td>@rate.Rate</td>
+                    <td>@rate.CurrencyCode</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Data not loaded.</p>
+}
+
+@code {
+    private List<ExchangeRate> exchangeRates;
+
+    private async Task LoadExchangeRates()
+    {
+        exchangeRates = await ExchangeRateService.GetExchangeRatesAsync();
+    }
+
+  
+
+    public class ExchangeRateResponse
+    {
+        public List<ExchangeRate> rates { get; set; }
+    }
+}

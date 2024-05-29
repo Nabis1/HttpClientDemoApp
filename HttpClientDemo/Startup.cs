@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
+using HttpClientDemo.Data;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,7 +26,8 @@ namespace HttpClientDemo
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<ScrapingService>();
-
+            services.AddHttpClient();
+            services.AddScoped<ExchangeRateService>();
             // Register HttpClient as a transient
             services.AddScoped<HttpClient>();
         }
