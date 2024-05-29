@@ -20,7 +20,21 @@ namespace HttpClientDemo.Data
         {
             var response = await _httpClient.GetStringAsync("https://api.cnb.cz//cnbapi/exrates/daily");
             var data = JsonSerializer.Deserialize<ExchangeRateResponse>(response);
-            return data?.Rates;
+            var rates = data?.Rates;
+
+            if (rates != null)
+            {
+                foreach (var rate in rates)
+                {
+                    if (rate.Amount != 1)
+                    {
+                        rate.Rate /= rate.Amount;
+                        rate.Amount = 1;
+                    }
+                }
+            }
+
+            return rates;
         }
     }
 
