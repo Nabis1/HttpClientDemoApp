@@ -10,15 +10,16 @@ namespace HttpClientDemo.Data
     public class ExchangeRateService
     {
         private readonly HttpClient _httpClient;
+        private const string Endpoint = "cnbapi/exrates/daily";
 
-        public ExchangeRateService(HttpClient httpClient)
+        public ExchangeRateService(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("ExchangeRateClient");
         }
 
         public async Task<List<ExchangeRate>> GetExchangeRatesAsync()
         {
-            var response = await _httpClient.GetStringAsync("https://api.cnb.cz//cnbapi/exrates/daily");
+            var response = await _httpClient.GetStringAsync(Endpoint);
             var data = JsonSerializer.Deserialize<ExchangeRateResponse>(response);
             var rates = data?.Rates;
 

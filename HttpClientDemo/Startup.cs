@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using HttpClientDemo.Data;
 using Microsoft.AspNetCore.Builder;
@@ -26,10 +24,13 @@ namespace HttpClientDemo
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<ScrapingService>();
-            services.AddHttpClient();
             services.AddScoped<ExchangeRateService>();
             // Register HttpClient as a transient
             services.AddScoped<HttpClient>();
+            services.AddHttpClient("ExchangeRateClient", client =>
+            {
+                client.BaseAddress = new Uri("https://api.cnb.cz/");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
